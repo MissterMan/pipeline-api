@@ -14,16 +14,4 @@ const config: PoolConfig = {
 
 const pool = new Pool(config);
 
-// Database pool health check
-export const poolHeathCheck = async (): Promise<boolean> => {
-  try {
-    // Test query
-    await pool.query("SELECT 1");
-    return true;
-  } catch (error) {
-    console.error("Database health check failed: ", error);
-    return false;
-  }
-};
-
 export default pool;
