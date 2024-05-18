@@ -30,7 +30,7 @@ export const createEndUser = async (data: EndUser): Promise<any[]> => {
   const query = `
   INSERT INTO pipeline.end_users
   (name, address, pic_name, phone_number, uuid, created_at, updated_at)
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+  VALUES ($1, $2, $3, $4, $5, $6, $7)
   RETURNING *;`;
 
   const values = [
@@ -91,7 +91,7 @@ export const deleteEndUser = async (uuid: string) => {
   try {
     const result = await pool.query(query, [uuid]);
     if (result.rowCount === 0) {
-      throw new Error("No rows were affected.");
+      return null;
     }
   } catch (error) {
     console.error("Error deleting end user:", error);
