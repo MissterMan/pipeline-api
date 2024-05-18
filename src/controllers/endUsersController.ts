@@ -75,7 +75,7 @@ export const createEndUserController = async (req: Request, res: Response) => {
     };
 
     const result = await createEndUser(endUserData);
-    return response(201, result, "User created", res);
+    return response(201, result, "End User created", res);
   } catch (error) {
     console.error(error);
     return response(
@@ -130,13 +130,13 @@ export const updateEndUserController = async (req: Request, res: Response) => {
 export const deleteEndUserController = async (req: Request, res: Response) => {
   try {
     const uuid: string = req.params.uuid;
-    await deleteEndUser(uuid);
+    const result = await deleteEndUser(uuid);
+    if (result === null) {
+      return response(404, "Data not found", `End User not found`, res);
+    }
     return response(200, "Data Deleted", `End User ${uuid} removed`, res);
   } catch (error: any) {
     console.error(error);
-    if (error.message === "No rows were affected.") {
-      return response(404, "Data not found", `End User not found`, res);
-    }
     return response(
       500,
       "Data error",
