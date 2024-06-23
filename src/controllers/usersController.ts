@@ -7,6 +7,7 @@ import {
   deleteUser,
 } from "../repositories/usersRepository";
 import { response } from "../utils/response";
+import { validatePassword, validateEmail } from "../utils/credentialValidation";
 import { v4 as uuidv4 } from "uuid";
 import User from "../models/userModel";
 import { hashPassword } from "../utils/hashPassword";
@@ -71,54 +72,20 @@ export const createUserController = async (req: Request, res: Response) => {
     }
 
     // Password Validation
-    const passwordValidate = data.password.trim();
-    if (passwordValidate.length < 8) {
-      return response(
-        400,
-        "Password error",
-        "Password must be at least 8 characters long",
-        res
-      );
-    }
-    if (!/\d/.test(passwordValidate)) {
-      return response(
-        400,
-        "Password error",
-        "Password must contain at least one number",
-        res
-      );
-    }
-    if (!/[A-Z]/.test(passwordValidate)) {
-      return response(
-        400,
-        "Password error",
-        "Password must contain at least one uppercase letter",
-        res
-      );
-    }
-    if (!/[a-z]/.test(passwordValidate)) {
-      return response(
-        400,
-        "Password error",
-        "Password must contain at least one lowercase letter",
-        res
-      );
-    }
-    if (!/[$&+,:;=?@#|'<>.^*()%!-]/.test(passwordValidate)) {
-      return response(
-        400,
-        "Password error",
-        "Password must contain at least one special character",
-        res
-      );
+    const passwordValidate = data.password;
+    try {
+      await validatePassword(passwordValidate);
+    } catch (error: Error | any) {
+      return response(400, "Password error", error.message, res);
     }
     // End of password validation
 
     // Email Validation
-    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailValidate = data.email.trim();
-    if (!emailRegex.test(emailValidate)) {
-      return response(400, "Email error", "Email format is invalid", res);
+    const emailValidate = data.email;
+    try {
+      await validateEmail(emailValidate);
+    } catch (error: Error | any) {
+      return response(400, "Email error", error.message, res);
     }
     // End of email validation
 
@@ -170,53 +137,19 @@ export const updateUserController = async (req: Request, res: Response) => {
 
     // Password Validation
     const passwordValidate = data.password.trim();
-    if (passwordValidate.length < 8) {
-      return response(
-        400,
-        "Password error",
-        "Password must be at least 8 characters long",
-        res
-      );
-    }
-    if (!/\d/.test(passwordValidate)) {
-      return response(
-        400,
-        "Password error",
-        "Password must contain at least one number",
-        res
-      );
-    }
-    if (!/[A-Z]/.test(passwordValidate)) {
-      return response(
-        400,
-        "Password error",
-        "Password must contain at least one uppercase letter",
-        res
-      );
-    }
-    if (!/[a-z]/.test(passwordValidate)) {
-      return response(
-        400,
-        "Password error",
-        "Password must contain at least one lowercase letter",
-        res
-      );
-    }
-    if (!/[$&+,:;=?@#|'<>.^*()%!-]/.test(passwordValidate)) {
-      return response(
-        400,
-        "Password error",
-        "Password must contain at least one special character",
-        res
-      );
+    try {
+      await validatePassword(passwordValidate);
+    } catch (error: Error | any) {
+      return response(400, "Password error", error.message, res);
     }
     // End of password validation
 
     // Email Validation
-    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailValidate = data.email.trim();
-    if (!emailRegex.test(emailValidate)) {
-      return response(400, "Email error", "Email format is invalid", res);
+    const emailValidate = data.email;
+    try {
+      await validateEmail(emailValidate);
+    } catch (error: Error | any) {
+      return response(400, "Email error", error.message, res);
     }
     // End of email validation
 
