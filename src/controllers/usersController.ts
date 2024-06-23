@@ -74,7 +74,7 @@ export const createUserController = async (req: Request, res: Response) => {
     // Password Validation
     const passwordValidate = data.password;
     try {
-      await validatePassword(passwordValidate);
+      validatePassword(passwordValidate);
     } catch (error: Error | any) {
       return response(400, "Password error", error.message, res);
     }
@@ -83,7 +83,7 @@ export const createUserController = async (req: Request, res: Response) => {
     // Email Validation
     const emailValidate = data.email;
     try {
-      await validateEmail(emailValidate);
+      validateEmail(emailValidate);
     } catch (error: Error | any) {
       return response(400, "Email error", error.message, res);
     }
@@ -138,7 +138,7 @@ export const updateUserController = async (req: Request, res: Response) => {
     // Password Validation
     const passwordValidate = data.password.trim();
     try {
-      await validatePassword(passwordValidate);
+      validatePassword(passwordValidate);
     } catch (error: Error | any) {
       return response(400, "Password error", error.message, res);
     }
@@ -147,7 +147,7 @@ export const updateUserController = async (req: Request, res: Response) => {
     // Email Validation
     const emailValidate = data.email;
     try {
-      await validateEmail(emailValidate);
+      validateEmail(emailValidate);
     } catch (error: Error | any) {
       return response(400, "Email error", error.message, res);
     }
