@@ -6,7 +6,7 @@ export const response = (
   message: string,
   res: Response
 ) => {
-  res.status(status_code).json({
+  return res.status(status_code).json({
     status_code: status_code,
     message: message,
     payload: data,

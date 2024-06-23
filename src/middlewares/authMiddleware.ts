@@ -24,7 +24,7 @@ export const verifyToken = (
   req: Request,
   res: Response,
   next: NextFunction
-): void => {
+) => {
   const authHeader = req.headers["authorization"];
 
   if (!authHeader) {
