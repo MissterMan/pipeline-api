@@ -16,11 +16,16 @@ import {
 import { response } from "../../src/utils/response";
 import { v4 as uuidv4 } from "uuid";
 import { hashPassword } from "../../src/utils/hashPassword";
+import {
+  validateEmail,
+  validatePassword,
+} from "../../src/utils/credentialValidation";
 
 // Mock dependencies
 jest.mock("../../src/repositories/usersRepository");
 jest.mock("../../src/utils/response");
 jest.mock("../../src/utils/hashPassword");
+jest.mock("../../src/utils/credentialValidation");
 jest.mock("uuid");
 jest.mock("bcrypt");
 
@@ -125,7 +130,18 @@ describe("User Controller", () => {
     });
   });
 
-  describe("Create user controller", () => {
+  describe("Create User Controller", () => {
+    let mockRequest: Partial<Request>;
+    let mockResponse: Partial<Response>;
+
+    beforeEach(() => {
+      mockRequest = {};
+      mockResponse = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+      };
+    });
+
     it("should create a new user", async () => {
       const newUser = { id: 1 };
       (uuidv4 as jest.Mock).mockReturnValueOnce("test-uuid");
@@ -144,6 +160,7 @@ describe("User Controller", () => {
         mockRequest as Request,
         mockResponse as Response
       );
+
       expect(createUser).toHaveBeenCalledWith({
         id: 1,
         name: "test",
@@ -163,149 +180,67 @@ describe("User Controller", () => {
       );
     });
 
-    describe("User password validation test", () => {
-      it("should return 400 if required fields are missing", async () => {
-        mockRequest.body = {};
+    it("should return 400 if required fields are missing", async () => {
+      mockRequest.body = {};
 
-        await createUserController(
-          mockRequest as Request,
-          mockResponse as Response
-        );
-        expect(response).toHaveBeenCalledWith(
-          400,
-          "Data error",
-          "All data are required",
-          mockResponse
-        );
-      });
-
-      it("should return 400 if password is less than 8 characters", async () => {
-        mockRequest.body = {
-          name: "test",
-          email: "test@example.com",
-          role: "admin",
-          birthdate: new Date(),
-          password: "pass",
-        };
-
-        await createUserController(
-          mockRequest as Request,
-          mockResponse as Response
-        );
-        expect(response).toHaveBeenCalledWith(
-          400,
-          "Password error",
-          "Password must be at least 8 characters long",
-          mockResponse
-        );
-      });
-
-      it("should return 400 if password does not contain at least one number", async () => {
-        mockRequest.body = {
-          name: "test",
-          email: "test@example.com",
-          role: "admin",
-          birthdate: new Date(),
-          password: "passwords",
-        };
-
-        await createUserController(
-          mockRequest as Request,
-          mockResponse as Response
-        );
-        expect(response).toHaveBeenCalledWith(
-          400,
-          "Password error",
-          "Password must contain at least one number",
-          mockResponse
-        );
-      });
-
-      it("should return 400 if password does not contain at least one uppercase letter", async () => {
-        mockRequest.body = {
-          name: "test",
-          email: "test@example.com",
-          role: "admin",
-          birthdate: new Date(),
-          password: "passwords123!",
-        };
-
-        await createUserController(
-          mockRequest as Request,
-          mockResponse as Response
-        );
-        expect(response).toHaveBeenCalledWith(
-          400,
-          "Password error",
-          "Password must contain at least one uppercase letter",
-          mockResponse
-        );
-      });
-
-      it("should return 400 if password does not contain at least one lowercase letter", async () => {
-        mockRequest.body = {
-          name: "test",
-          email: "test@example.com",
-          role: "admin",
-          birthdate: new Date(),
-          password: "PASSWORDS123!",
-        };
-
-        await createUserController(
-          mockRequest as Request,
-          mockResponse as Response
-        );
-        expect(response).toHaveBeenCalledWith(
-          400,
-          "Password error",
-          "Password must contain at least one lowercase letter",
-          mockResponse
-        );
-      });
-
-      it("should return 400 if password does not contain at least one special character", async () => {
-        mockRequest.body = {
-          name: "test",
-          email: "test@example.com",
-          role: "admin",
-          birthdate: new Date(),
-          password: "Password123",
-        };
-
-        await createUserController(
-          mockRequest as Request,
-          mockResponse as Response
-        );
-        expect(response).toHaveBeenCalledWith(
-          400,
-          "Password error",
-          "Password must contain at least one special character",
-          mockResponse
-        );
-      });
+      await createUserController(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+      expect(response).toHaveBeenCalledWith(
+        400,
+        "Data error",
+        "All data are required",
+        mockResponse
+      );
     });
 
-    describe("User email validation test", () => {
-      it("should return 400 if email is invalid", async () => {
-        mockRequest.body = {
-          name: "test",
-          email: "invalid-email",
-          role: "admin",
-          birthdate: new Date(),
-          password: "Password123!",
-        };
-
-        await createUserController(
-          mockRequest as Request,
-          mockResponse as Response
-        );
-        expect(response).toHaveBeenCalledWith(
-          400,
-          "Email error",
-          "Email format is invalid",
-          mockResponse
-        );
+    it("should return 400 if password validation fails", async () => {
+      (validatePassword as jest.Mock).mockImplementationOnce(() => {
+        throw new Error("Password must contain at least one number");
       });
+      mockRequest.body = {
+        name: "test",
+        email: "test@example.com",
+        role: "admin",
+        birthdate: new Date(),
+        password: "password!",
+      };
+
+      await createUserController(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+      expect(response).toHaveBeenCalledWith(
+        400,
+        "Password error",
+        "Password must contain at least one number",
+        mockResponse
+      );
+    });
+
+    it("should return 400 if email validation fails", async () => {
+      (validateEmail as jest.Mock).mockImplementationOnce(() => {
+        throw new Error("Email format is invalid");
+      });
+      mockRequest.body = {
+        name: "test",
+        email: "invalid-email",
+        role: "admin",
+        birthdate: new Date(),
+        password: "Password123!",
+      };
+
+      await createUserController(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+      expect(response).toHaveBeenCalledWith(
+        400,
+        "Email error",
+        "Email format is invalid",
+        mockResponse
+      );
     });
 
     it("should handle errors", async () => {
@@ -330,7 +265,18 @@ describe("User Controller", () => {
     });
   });
 
-  describe("Update user controller", () => {
+  describe("Update User Controller", () => {
+    let mockRequest: Partial<Request>;
+    let mockResponse: Partial<Response>;
+
+    beforeEach(() => {
+      mockRequest = {};
+      mockResponse = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+      };
+    });
+
     it("should update an existing user", async () => {
       mockRequest.params = { uuid: "test-uuid" };
       mockRequest.body = {
@@ -344,10 +290,12 @@ describe("User Controller", () => {
       const updatedUser = { id: 1 };
       (hashPassword as jest.Mock).mockResolvedValueOnce("hashedPassword");
       (updateUser as jest.Mock).mockResolvedValueOnce(updatedUser);
+
       await updateUserController(
         mockRequest as Request,
         mockResponse as Response
       );
+
       expect(updateUser).toHaveBeenCalledWith("test-uuid", {
         id: 1,
         uuid: "test-uuid",
@@ -369,6 +317,7 @@ describe("User Controller", () => {
     it("should return 400 if required fields are missing", async () => {
       mockRequest.params = { uuid: "test-uuid" };
       mockRequest.body = {};
+
       await updateUserController(
         mockRequest as Request,
         mockResponse as Response
@@ -400,7 +349,7 @@ describe("User Controller", () => {
       expect(response).toHaveBeenCalledWith(
         404,
         "Data not found",
-        "User test-uuid not found",
+        `User test-uuid not found`,
         mockResponse
       );
     });
