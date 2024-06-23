@@ -8,8 +8,8 @@ import {
 } from "../repositories/usersRepository";
 import { response } from "../utils/response";
 import { v4 as uuidv4 } from "uuid";
-import bcrypt from "bcrypt";
 import User from "../models/userModel";
+import { hashPassword } from "../utils/hashPassword";
 
 // Get all users data
 export const getUsersController = async (req: Request, res: Response) => {
@@ -123,6 +123,7 @@ export const createUserController = async (req: Request, res: Response) => {
     // End of email validation
 
     // Create additional data
+    const id: number = data.id;
     const name: string = data.name;
     const email: string = emailValidate;
     const role: string = data.role;
@@ -134,6 +135,7 @@ export const createUserController = async (req: Request, res: Response) => {
 
     // Insert all data into object
     const userData: User = {
+      id,
       name,
       email,
       role,
@@ -219,6 +221,7 @@ export const updateUserController = async (req: Request, res: Response) => {
     // End of email validation
 
     // Set updated data
+    const id: number = data.id;
     const name: string = data.name;
     const email: string = emailValidate;
     const role: string = data.role;
@@ -228,6 +231,7 @@ export const updateUserController = async (req: Request, res: Response) => {
 
     // Assign updated data
     const updatedUser: User = {
+      id,
       uuid,
       name,
       email,
@@ -259,7 +263,6 @@ export const deleteUserController = async (req: Request, res: Response) => {
     await deleteUser(uuid);
     return response(200, "Data deleted", `User ${uuid} removed`, res);
   } catch (error: any) {
-    console.error(error);
     if (error.message === "No rows were affected.") {
       return response(404, "Data not found", `User not found`, res);
     }
@@ -270,25 +273,4 @@ export const deleteUserController = async (req: Request, res: Response) => {
       res
     );
   }
-};
-
-// Hash password
-const hashPassword = (password: string): Promise<string> => {
-  return new Promise((resolve: any, reject) => {
-    // Generate salt
-    bcrypt.genSalt(10, (err: Error | undefined, salt: string) => {
-      if (err) {
-        reject(err);
-      } else {
-        // Hash the password
-        bcrypt.hash(password, salt, (err: Error | undefined, hash: string) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(hash);
-          }
-        });
-      }
-    });
-  });
 };

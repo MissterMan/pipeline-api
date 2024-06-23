@@ -28,7 +28,7 @@ export const getProjectCategoryById = async (
   }
 };
 
-export const createProjectCategories = async (
+export const createProjectCategory = async (
   data: ProjectCategory
 ): Promise<any[]> => {
   const query = `INSERT INTO pipeline.project_categories 
@@ -50,7 +50,7 @@ export const createProjectCategories = async (
   }
 };
 
-export const updateProjectCategories = async (
+export const updateProjectCategory = async (
   uuid: string,
   data: ProjectCategory
 ): Promise<any[] | null> => {
@@ -77,8 +77,8 @@ export const updateProjectCategories = async (
   }
 };
 
-export const deleteProjectCategories = async (uuid: string) => {
-  const query = `DELETE FROM pipeline.pipeline_users WHERE uuid = $1`;
+export const deleteProjectCategory = async (uuid: string) => {
+  const query = `DELETE FROM pipeline.project_categories WHERE uuid = $1`;
   try {
     const result = await pool.query(query, [uuid]);
     if (result.rowCount === 0) {

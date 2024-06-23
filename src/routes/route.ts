@@ -27,8 +27,20 @@ import {
   getProjectCategoriesController,
   updateProjectCategoriesController,
 } from "../controllers/projectCategoriesController";
+import {
+  approveChangeRequestController,
+  createChangeRequestController,
+  getChangeRequestContorller,
+} from "../controllers/changeRequestController";
+import { login } from "../controllers/authController";
+import { verifyToken } from "../middlewares/authMiddleware";
+import { checkIsAdmin } from "../middlewares/isAdminMiddleware";
 
 export const router: Router = express.Router();
+
+router.post("/login", login);
+
+router.use(verifyToken);
 
 // Pipeline route
 router.get("/pipelines", getPipelineController);
@@ -52,8 +64,16 @@ router.put("/endusers/:uuid", updateEndUserController);
 router.delete("/endusers/:uuid", deleteEndUserController);
 
 // Categories route
-router.get("/categories", getProjectCategoriesController);
-router.get("/categories/:uuid", getProjectCategoriesByIdController);
-router.post("/categories", createProjectCategoriesController);
-router.put("/categories/:uuid", updateProjectCategoriesController);
-router.delete("/categories/:uuid", deleteProjectCategoriesController);
+router.get("/project-categories", getProjectCategoriesController);
+router.get("/project-categories/:uuid", getProjectCategoriesByIdController);
+router.post("/project-categories", createProjectCategoriesController);
+router.put("/project-categories/:uuid", updateProjectCategoriesController);
+router.delete("/project-categories/:uuid", deleteProjectCategoriesController);
+
+router.get("/change-request", getChangeRequestContorller);
+router.post("/change-request", createChangeRequestController);
+router.put(
+  "/approve-change-request/:uuid",
+  checkIsAdmin,
+  approveChangeRequestController
+);

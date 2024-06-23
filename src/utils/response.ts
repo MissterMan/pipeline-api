@@ -2,7 +2,7 @@ import { Response } from "express";
 
 export const response = (
   status_code: number,
-  data: any[] | string | null,
+  data: any[] | string | object | null | number,
   message: string,
   res: Response
 ) => {

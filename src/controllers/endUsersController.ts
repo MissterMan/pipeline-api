@@ -5,14 +5,14 @@ import EndUser from "../models/endUserModel";
 import {
   createEndUser,
   deleteEndUser,
-  getEndUser,
+  getEndUsers,
   getEndUserById,
-  updateEnduser,
+  updateEndUser,
 } from "../repositories/endUsersRepository";
 
 export const getEndUserController = async (req: Request, res: Response) => {
   try {
-    const endUser = await getEndUser();
+    const endUser = await getEndUsers();
     return response(200, endUser, "Get data all end users", res);
   } catch (error) {
     console.error(error);
@@ -111,7 +111,7 @@ export const updateEndUserController = async (req: Request, res: Response) => {
       updated_at,
     };
 
-    const result = await updateEnduser(uuid, updatedEndUser);
+    const result = await updateEndUser(uuid, updatedEndUser);
     if (result === null) {
       return response(404, "Data not found", `End User ${uuid} not found`, res);
     }

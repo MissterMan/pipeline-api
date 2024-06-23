@@ -1,10 +1,9 @@
-import { response } from "express";
 import pool from "../configs/database";
 import Pipeline from "../models/pipelineModel";
 
 // Get all pipeline data
 export const getPipelines = async () => {
-  const result = await pool.query(`
+  const query = `
     SELECT 
       pipeline.pipelines.id, 
       pipeline.pipelines."uuid", 
@@ -31,8 +30,14 @@ export const getPipelines = async () => {
       pipeline.pipeline_users as user_pic on pipeline.pipelines.id_pic_project = user_pic.id
     JOIN 
       pipeline.end_users on pipeline.pipelines.id_end_user = pipeline.end_users.id 
-  `);
-  return result.rows;
+  `;
+
+  try {
+    const result = await pool.query(query);
+    return result.rows;
+  } catch (error) {
+    throw error;
+  }
 };
 
 // Get pipeline by ID
@@ -126,7 +131,7 @@ export const createPipeline = async (data: Pipeline) => {
   try {
     const result = await pool.query(query, values);
     if (result.rowCount === 0) {
-      throw new Error("No rows were affected");
+      throw new Error("No rows were affected.");
     }
     return result.rows[0];
   } catch (error) {

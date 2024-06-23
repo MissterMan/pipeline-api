@@ -3,11 +3,11 @@ import { response } from "../utils/response";
 import { v4 as uuidv4 } from "uuid";
 import ProjectCategory from "../models/projectCategoryModel";
 import {
-  createProjectCategories,
-  deleteProjectCategories,
+  createProjectCategory,
+  deleteProjectCategory,
   getProjectCategory,
   getProjectCategoryById,
-  updateProjectCategories,
+  updateProjectCategory,
 } from "../repositories/projectCategoryRepository";
 
 export const getProjectCategoriesController = async (
@@ -73,7 +73,7 @@ export const createProjectCategoriesController = async (
       updated_at,
     };
 
-    const result = await createProjectCategories(categoriesData);
+    const result = await createProjectCategory(categoriesData);
     return response(201, result, "Categories created", res);
   } catch (error) {
     console.error(error);
@@ -109,7 +109,7 @@ export const updateProjectCategoriesController = async (
       updated_at,
     };
 
-    const result = await updateProjectCategories(uuid, updatedCategories);
+    const result = await updateProjectCategory(uuid, updatedCategories);
     if (result === null) {
       return response(404, "Data not found", `Categories not found`, res);
     }
@@ -131,7 +131,7 @@ export const deleteProjectCategoriesController = async (
 ) => {
   try {
     const uuid: string = req.params.uuid;
-    await deleteProjectCategories(uuid);
+    await deleteProjectCategory(uuid);
     return response(200, "Data deleted", "Categories removed", res);
   } catch (error: any) {
     console.error(error);

@@ -1,7 +1,7 @@
 import pool from "../configs/database";
 import EndUser from "../models/endUserModel";
 
-export const getEndUser = async (): Promise<any[]> => {
+export const getEndUsers = async (): Promise<any[]> => {
   const query = "SELECT * FROM pipeline.end_users";
   try {
     const result = await pool.query(query);
@@ -46,7 +46,7 @@ export const createEndUser = async (data: EndUser): Promise<any[]> => {
   try {
     const result = await pool.query(query, values);
     if (result.rowCount === 0) {
-      throw new Error("No rows were affected");
+      throw new Error("No rows were affected.");
     }
     return result.rows[0];
   } catch (error) {
@@ -55,7 +55,7 @@ export const createEndUser = async (data: EndUser): Promise<any[]> => {
   }
 };
 
-export const updateEnduser = async (uuid: string, data: EndUser) => {
+export const updateEndUser = async (uuid: string, data: EndUser) => {
   const query = `
   UPDATE pipeline.end_users
   SET name = $1, address = $2, pic_name = $3, phone_number = $4, updated_at = $5
