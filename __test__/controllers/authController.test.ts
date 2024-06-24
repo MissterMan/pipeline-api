@@ -6,7 +6,7 @@ import { authUser } from "../../src/repositories/authRepository";
 import { response } from "../../src/utils/response";
 import { login } from "../../src/controllers/authController";
 
-const env = process.env.NODE_ENV || "development";
+const env = process.env.NODE_ENV ?? "development";
 const envPath = path.resolve(process.cwd(), `.env.${env}`);
 dotenv.config({ path: envPath });
 

@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import { response } from "../utils/response";
 import path from "path";
 
-const env = process.env.NODE_ENV || "development";
+const env = process.env.NODE_ENV ?? "development";
 const envPath = path.resolve(process.cwd(), `.env.${env}`);
 dotenv.config({ path: envPath });
 
