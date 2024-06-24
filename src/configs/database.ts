@@ -1,7 +1,10 @@
 import { Pool, PoolConfig } from "pg";
 import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config();
+const env = process.env.NODE_ENV || "development";
+const envPath = path.resolve(process.cwd(), `.env.${env}`);
+dotenv.config({ path: envPath });
 
 const config: PoolConfig = {
   host: process.env.DB_HOST,

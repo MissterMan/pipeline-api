@@ -3,8 +3,11 @@ import jwt from "jsonwebtoken";
 import { authUser } from "../repositories/authRepository";
 import { response } from "../utils/response";
 import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config();
+const env = process.env.NODE_ENV || "development";
+const envPath = path.resolve(process.cwd(), `.env.${env}`);
+dotenv.config({ path: envPath });
 
 let jwtSecretKey: string = process.env.JWT_SECRET as string;
 let jwtExpires: string = process.env.JWT_EXPIRE as string;

@@ -2,8 +2,11 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import { response } from "../utils/response";
+import path from "path";
 
-dotenv.config();
+const env = process.env.NODE_ENV || "development";
+const envPath = path.resolve(process.cwd(), `.env.${env}`);
+dotenv.config({ path: envPath });
 
 let jwtSecretKey: string = process.env.JWT_SECRET as string;
 interface JwtPayload {
