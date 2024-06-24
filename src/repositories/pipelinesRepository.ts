@@ -35,7 +35,8 @@ export const getPipelines = async () => {
   try {
     const result = await pool.query(query);
     return result.rows;
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Error when getting pipelines:", error);
     throw error;
   }
 };

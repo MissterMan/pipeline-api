@@ -32,6 +32,7 @@ export const getChangeRequest = async () => {
     const result = await pool.query(query);
     return result.rows;
   } catch (error) {
+    console.error("Database query failed:", error); // Log the error message
     throw error;
   }
 };
@@ -72,7 +73,7 @@ export const createChangeRequest = async (data: ChangeRequest) => {
       throw new Error("No rows were affected");
     }
     return result.rows[0];
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error when inserting new change request:", error);
     throw error;
   }
