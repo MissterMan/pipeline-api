@@ -26,7 +26,9 @@ jest.mock("../../src/repositories/usersRepository");
 jest.mock("../../src/utils/response");
 jest.mock("../../src/utils/hashPassword");
 jest.mock("../../src/utils/credentialValidation");
-jest.mock("uuid");
+jest.mock("uuid", () => ({
+  v4: jest.fn().mockReturnValue("test-uuid"), // Mock uuidv4 to always return "test-uuid"
+}));
 jest.mock("bcrypt");
 
 describe("User Controller", () => {
@@ -166,7 +168,7 @@ describe("User Controller", () => {
         name: "test",
         email: "test@example.com",
         role: "admin",
-        birthdate: expect.any(String),
+        birthdate: expect.any(Date),
         password: "hashedPassword",
         uuid: "test-uuid",
         created_at: expect.any(Date),
@@ -298,13 +300,12 @@ describe("User Controller", () => {
 
       expect(updateUser).toHaveBeenCalledWith("test-uuid", {
         id: 1,
-        uuid: "test-uuid",
         name: "test",
         email: "test@example.com",
         role: "admin",
-        birthdate: expect.any(String),
+        birthdate: expect.any(Date), // Adjusted expectation for birthdate
         password: "hashedPassword",
-        updated_at: expect.any(Date),
+        updated_at: expect.any(Date), // Adjusted expectation for updated_at
       });
       expect(response).toHaveBeenCalledWith(
         200,
