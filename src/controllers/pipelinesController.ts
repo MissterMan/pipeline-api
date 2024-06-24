@@ -79,40 +79,11 @@ export const createPipelineController = async (req: Request, res: Response) => {
       return response(400, "Data error", "All data are required", res);
     }
 
-    const id_category_project: number = data.id_category_project;
-    const uuid: string = uuidv4();
-    const project_name: string = data.project_name;
-    const id_user_sales: number = data.id_user_sales;
-    const id_end_user: number = data.id_end_user;
-    const id_pic_project: number = data.id_pic_project;
-    const product_price: number = data.product_price;
-    const service_price: number = data.service_price;
-    const margin: number = data.margin;
-    const estimated_closed_date: Date = data.estimated_closed_date;
-    const estimated_delivered_date: Date = data.estimated_delivered_date;
-    const description: string | undefined = data.description;
-    const status: string = data.status;
-    const file_url: string | undefined = data.file_url;
-    const created_at: Date = new Date();
-    const updated_at: Date = created_at;
-
     const pipelineData: Pipeline = {
-      id_category_project,
-      uuid,
-      project_name,
-      id_user_sales,
-      id_end_user,
-      id_pic_project,
-      product_price,
-      service_price,
-      margin,
-      estimated_closed_date,
-      estimated_delivered_date,
-      description,
-      status,
-      file_url,
-      created_at,
-      updated_at,
+      ...data,
+      uuid: uuidv4(),
+      created_at: new Date(),
+      updated_at: new Date(),
     };
 
     const pipeline = await createPipeline(pipelineData);
@@ -149,37 +120,9 @@ export const updatePipelineController = async (req: Request, res: Response) => {
       return response(400, "Data error", "All data are required", res);
     }
 
-    const id_category_project: number = data.id_category_project;
-    const project_name: string = data.project_name;
-    const id_user_sales: number = data.id_user_sales;
-    const id_end_user: number = data.id_end_user;
-    const id_pic_project: number = data.id_pic_project;
-    const product_price: number = data.product_price;
-    const service_price: number = data.service_price;
-    const margin: number = data.margin;
-    const estimated_closed_date: Date = data.estimated_closed_date;
-    const estimated_delivered_date: Date = data.estimated_delivered_date;
-    const description: string | undefined = data.description;
-    const status: string = data.status;
-    const file_url: string | undefined = data.file_url;
-    const updated_at: Date = new Date();
-
     const updatedPipeline: Pipeline = {
-      id_category_project,
-      project_name,
-      id_user_sales,
-      id_end_user,
-      id_pic_project,
-      product_price,
-      service_price,
-      margin,
-      estimated_closed_date,
-      estimated_delivered_date,
-      description,
-      status,
-      file_url,
-      updated_at,
-      uuid,
+      ...data,
+      updated_at: new Date(),
     };
 
     const result = await updatePipeline(uuid, updatedPipeline);
