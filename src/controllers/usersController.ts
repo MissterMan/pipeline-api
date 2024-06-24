@@ -12,6 +12,21 @@ import { v4 as uuidv4 } from "uuid";
 import User from "../models/userModel";
 import { hashPassword } from "../utils/hashPassword";
 
+const handleValidation = (
+  validateFn: (value: any) => boolean,
+  value: any,
+  errorMessage: string,
+  res: Response
+): boolean => {
+  try {
+    validateFn(value);
+    return true;
+  } catch (error: any) {
+    response(400, errorMessage, error.message, res);
+    return false;
+  }
+};
+
 // Get all users data
 export const getUsersController = async (req: Request, res: Response) => {
   try {
@@ -72,45 +87,37 @@ export const createUserController = async (req: Request, res: Response) => {
     }
 
     // Password Validation
-    const passwordValidate = data.password;
-    try {
-      validatePassword(passwordValidate);
-    } catch (error: Error | any) {
-      return response(400, "Password error", error.message, res);
+    if (
+      !handleValidation(validatePassword, data.password, "Password error", res)
+    ) {
+      return;
     }
     // End of password validation
 
     // Email Validation
-    const emailValidate = data.email;
-    try {
-      validateEmail(emailValidate);
-    } catch (error: Error | any) {
-      return response(400, "Email error", error.message, res);
+    if (!handleValidation(validateEmail, data.email, "Email error", res)) {
+      return;
     }
     // End of email validation
 
-    // Create additional data
-    const id: number = data.id;
-    const name: string = data.name;
-    const email: string = emailValidate;
-    const role: string = data.role;
-    const birthdate: string = new Date(data.birthdate).toJSON().split("T")[0];
-    const password: string = await hashPassword(passwordValidate);
-    const uuid: string = uuidv4();
-    const created_at: Date = new Date();
-    const updated_at: Date = created_at;
+    // // Create additional data
+    // const id: number = data.id;
+    // const name: string = data.name;
+    // const email: string = emailValidate;
+    // const role: string = data.role;
+    // const birthdate: string = new Date(data.birthdate).toJSON().split("T")[0];
+    // const password: string = await hashPassword(passwordValidate);
+    // const uuid: string = uuidv4();
+    // const created_at: Date = new Date();
+    // const updated_at: Date = created_at;
 
     // Insert all data into object
     const userData: User = {
-      id,
-      name,
-      email,
-      role,
-      birthdate,
-      password,
-      uuid,
-      created_at,
-      updated_at,
+      ...data,
+      password: await hashPassword(data.password),
+      uuid: uuidv4(),
+      created_at: new Date(),
+      updated_at: new Date(),
     };
 
     const result = await createUser(userData);
@@ -136,42 +143,26 @@ export const updateUserController = async (req: Request, res: Response) => {
     }
 
     // Password Validation
-    const passwordValidate = data.password.trim();
-    try {
-      validatePassword(passwordValidate);
-    } catch (error: Error | any) {
-      return response(400, "Password error", error.message, res);
+    if (
+      !handleValidation(validatePassword, data.password, "Password error", res)
+    ) {
+      return;
     }
     // End of password validation
 
     // Email Validation
-    const emailValidate = data.email;
-    try {
-      validateEmail(emailValidate);
-    } catch (error: Error | any) {
-      return response(400, "Email error", error.message, res);
+    if (!handleValidation(validateEmail, data.email, "Email error", res)) {
+      return;
     }
     // End of email validation
 
     // Set updated data
-    const id: number = data.id;
-    const name: string = data.name;
-    const email: string = emailValidate;
-    const role: string = data.role;
-    const birthdate: string = new Date(data.birthdate).toJSON().split("T")[0];
-    const password: string = await hashPassword(passwordValidate);
-    const updated_at: Date = new Date();
 
     // Assign updated data
     const updatedUser: User = {
-      id,
-      uuid,
-      name,
-      email,
-      role,
-      birthdate,
-      password,
-      updated_at,
+      ...data,
+      password: await hashPassword(data.password),
+      updated_at: new Date(),
     };
 
     const result = await updateUser(uuid, updatedUser);
