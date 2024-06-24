@@ -222,7 +222,6 @@ describe("Pipeline Controller", () => {
       );
       expect(updatePipeline).toHaveBeenCalledWith("test-uuid", {
         ...mockRequest.body,
-        uuid: "test-uuid",
         updated_at: expect.any(Date),
       });
       expect(response).toHaveBeenCalledWith(

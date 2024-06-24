@@ -3,8 +3,11 @@ import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { verifyToken } from "../../src/middlewares/authMiddleware";
 import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config();
+const env = process.env.NODE_ENV || "development";
+const envPath = path.resolve(process.cwd(), `.env.${env}`);
+dotenv.config({ path: envPath });
 
 const app = express();
 app.use(express.json());

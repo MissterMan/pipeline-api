@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import path from "path";
 import { authUser } from "../../src/repositories/authRepository";
 import { response } from "../../src/utils/response";
 import { login } from "../../src/controllers/authController";
 
-dotenv.config();
+const env = process.env.NODE_ENV || "development";
+const envPath = path.resolve(process.cwd(), `.env.${env}`);
+dotenv.config({ path: envPath });
 
 jest.mock("jsonwebtoken");
 jest.mock("../../src/repositories/authRepository");
