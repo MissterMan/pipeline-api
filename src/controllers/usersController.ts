@@ -100,17 +100,6 @@ export const createUserController = async (req: Request, res: Response) => {
     }
     // End of email validation
 
-    // // Create additional data
-    // const id: number = data.id;
-    // const name: string = data.name;
-    // const email: string = emailValidate;
-    // const role: string = data.role;
-    // const birthdate: string = new Date(data.birthdate).toJSON().split("T")[0];
-    // const password: string = await hashPassword(passwordValidate);
-    // const uuid: string = uuidv4();
-    // const created_at: Date = new Date();
-    // const updated_at: Date = created_at;
-
     // Insert all data into object
     const userData: User = {
       ...data,
