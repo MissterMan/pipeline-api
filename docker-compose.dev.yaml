@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+  pipeline-api-dev:
+    build:
+      context: .
+      target: build
+    networks:
+      - pipeline-api
+    volumes:
+      - ./:/app
+      - pipeline-api-dev:/app/node_modules
+    ports:
+      - 3001:3001
+    command: npm run dev
+    environment:
+      NODE_ENV: development
+
+volumes:
+  pipeline-api-dev:
+
+networks:
+  pipeline-api:
+    name: pipeline-api
+    external: true

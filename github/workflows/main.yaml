@@ -3,7 +3,7 @@ on:
     branches:
       - main
 
-name: Workflow Test
+name: Workflow Testing
 jobs:
   test:
     runs-on: ubuntu-latest

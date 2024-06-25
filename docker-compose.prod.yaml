@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  pipeline-api-prod:
+    build:
+      context: .
+      target: production
+    networks:
+      - pipeline-api
+    ports:
+      - 3000:3000
+    environment:
+      NODE_ENV: production
+
+networks:
+  pipeline-api:
+    name: pipeline-api
+    external: true
