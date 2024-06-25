@@ -18,7 +18,7 @@ jobs:
       - name: Set up NODE_ENV
         run: echo "NODE_ENV=test" >> $GITHUB_ENV
       - name: Install dependencies
-        run: npm Install
+        run: npm install
       - name: Run tests
         run: npm run test
       - name: Archive coverage results
