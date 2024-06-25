@@ -1,0 +1,57 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Workflow Testing
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.10.0
+      - name: Set up NODE_ENV
+        run: echo "NODE_ENV=test" >> $GITHUB_ENV
+      - name: Install dependencies
+        run: npm Install
+      - name: Run tests
+        run: npm run test
+      - name: Archive coverage results
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage/lcov.info
+
+  sonarqube:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Download coverage results
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage
+          path: ./coverage
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_SCANNER_OPTS: -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      - name: SonarQube Quality Gate
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: "SonarQube Quality Gate Status"
+        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
