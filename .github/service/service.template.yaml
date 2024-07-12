@@ -16,19 +16,40 @@ spec:
         - image: ${IMAGE}
           env:
             - name: DB_USERNAME
-              value: $DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: DB_USERNAME
+                  key: latest
             - name: DB_PASSWORD
-              value: $DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: DB_PASSWORD
+                  key: latest
             - name: DB_DATABASE
-              value: $DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: DB_DATABASE
+                  key: latest
             - name: DB_HOST
-              value: $DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: DB_HOST
+                  key: latest
             - name: DB_PORT
-              value: $DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: DB_PORT
+                  key: latest
             - name: JWT_SECRET
-              value: $JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: JWT_SECRET
+                  key: latest
             - name: JWT_EXPIRE
-              value: $JWT_EXPIRE
+              valueFrom:
+                secretKeyRef:
+                  name: JWT_EXPIRE
+                  key: latest
             - name: NODE_ENV
               value: $NODE_ENV
             - name: PSQL_DB_SCHEMA
