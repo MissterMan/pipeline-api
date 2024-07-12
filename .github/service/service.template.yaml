@@ -1,0 +1,41 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: ${SERVICE}
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "3"
+        run.googleapis.com/minScale: "0"
+    spec:
+      containerConcurrency: 80
+      containers:
+        - image: ${IMAGE}
+          env:
+            - name: DB_USERNAME
+              value: $DB_USERNAME
+            - name: DB_PASSWORD
+              value: $DB_PASSWORD
+            - name: DB_DATABASE
+              value: $DB_DATABASE
+            - name: DB_HOST
+              value: $DB_HOST
+            - name: DB_PORT
+              value: $DB_PORT
+            - name: JWT_SECRET
+              value: $JWT_SECRET
+            - name: JWT_EXPIRE
+              value: $JWT_EXPIRE
+            - name: NODE_ENV
+              value: $NODE_ENV
+            - name: PSQL_DB_SCHEMA
+              value: "pipeline"
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+  traffic:
+    - percent: 100
+      latestRevision: true

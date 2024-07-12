@@ -1,7 +1,6 @@
 on:
   push:
-    branches:
-      - main
+    branches: [development, stage, main]
 
 name: Workflow Testing
 jobs:
@@ -12,9 +11,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20.10.0
+          node-version: 20
       - name: Set environment variables
         run: |
           echo "JWT_SECRET=${{ secrets.JWT_SECRET_TEST }}" >> $GITHUB_ENV
@@ -58,3 +57,42 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       - name: "SonarQube Quality Gate Status"
         run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
+
+  development:
+    name: Deploy to cloudrun (Dev environment)
+    needs: sonarqube
+    if: ${{ github.ref == 'refs/heads/development' || github.base_ref == 'development' }}
+    uses: ./.github/workflows/_deployment.yaml
+    permissions:
+      id-token: write
+      contents: read
+    with:
+      environment: dev
+      ref: ${{ github.sha }}
+    secrets: inherit
+
+  stage:
+    name: Deploy to cloudrun (Stage environment)
+    needs: sonarqube
+    if: ${{ github.ref == 'refs/heads/stage' || github.base_ref == 'stage' }}
+    uses: ./.github/workflows/_deployment.yaml
+    permissions:
+      id-token: write
+      contents: read
+    with:
+      environment: stage
+      ref: ${{ github.sha }}
+    secrets: inherit
+
+  prod:
+    name: Deploy to cloudrun (Prod environment)
+    needs: sonarqube
+    if: ${{ github.ref == 'refs/heads/main' || github.base_ref == 'main' }}
+    uses: ./.github/workflows/_deployment.yaml
+    permissions:
+      id-token: write
+      contents: read
+    with:
+      environment: prod
+      ref: ${{ github.sha }}
+    secrets: inherit
