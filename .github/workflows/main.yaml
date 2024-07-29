@@ -27,8 +27,8 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v3
         with:
-          name: coveragie
-          path: coverage/lcov.info
+          name: coverage
+          path: coverage/lcoview.info
 
   sonarqube:
     runs-on: ubuntu-latest
