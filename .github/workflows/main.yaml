@@ -2,7 +2,7 @@ on:
   push:
     branches: [development, stage, main]
 
-name: Workflow Testing
+name: Automated Deployment
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v3
         with:
-          name: coverage
+          name: coveragie
           path: coverage/lcov.info
 
   sonarqube:
