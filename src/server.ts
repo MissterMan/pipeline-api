@@ -20,6 +20,3 @@ app.listen(port, () => {
 });
 
 export default app;
-
-console.log("Test");
-console.log("Perubahan");
