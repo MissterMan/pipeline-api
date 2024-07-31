@@ -1,5 +1,4 @@
-import { Pool } from "pg";
-import pool from "../src/configs/database"; // Sesuaikan jalur dengan struktur proyek Anda
+import pool from "../src/configs/database";
 
 jest.mock("pg", () => {
   const mPool = {
