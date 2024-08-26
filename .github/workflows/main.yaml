@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [development, stage, main]
+    branches: [development, main]
 
 name: Automated Deployment
 jobs:
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Download coverage results
@@ -68,19 +68,6 @@ jobs:
       contents: read
     with:
       environment: dev
-      ref: ${{ github.sha }}
-    secrets: inherit
-
-  stage:
-    name: Deploy to cloudrun (Stage environment)
-    needs: sonarqube
-    if: ${{ github.ref == 'refs/heads/stage' || github.base_ref == 'stage' }}
-    uses: ./.github/workflows/_deployment.yaml
-    permissions:
-      id-token: write
-      contents: read
-    with:
-      environment: stage
       ref: ${{ github.sha }}
     secrets: inherit
 
