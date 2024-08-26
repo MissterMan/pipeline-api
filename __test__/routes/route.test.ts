@@ -1,6 +1,6 @@
 import express from "express";
 import request from "supertest";
-import { router } from "../../src/routes/route"; // Ganti dengan path yang sesuai
+import { router } from "../../src/routes/route";
 
 // Mock controllers
 jest.mock("../../src/controllers/pipelinesController", () => ({
