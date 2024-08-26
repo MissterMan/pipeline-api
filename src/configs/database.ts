@@ -17,4 +17,16 @@ const config: PoolConfig = {
 
 const pool = new Pool(config);
 
+export const checkConnection = async () => {
+  pool.connect((err, client, release) => {
+    if (err) {
+      console.error("Failed to connect to PostgreSQL:", err.stack);
+    } else {
+      console.log("Connected to PostgreSQL database");
+      release();
+    }
+  });
+};
+
+checkConnection();
 export default pool;
